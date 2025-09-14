@@ -1,7 +1,10 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL:
+    process.env.NODE_ENV === "production"
+      ? "https://saas-note-dgqr5oweu-templehubsakshis-projects.vercel.app/api"
+      : "http://localhost:5000/api",
 });
 
 API.interceptors.request.use((config) => {
@@ -13,7 +16,7 @@ API.interceptors.request.use((config) => {
 API.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response.status === 401) {
+    if (error.response && error.response.status === 401) {
       localStorage.removeItem("token");
       window.location.href = "/login";
     }
